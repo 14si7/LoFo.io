@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search and Display Data</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        color: #333;
+        position: relative;
+      }
+
+      form {
+        margin-top: 20px;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button[type="submit"] {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #2980b9;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #3498db;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      tr:hover {
+        background-color: #e0e0e0;
+      }
+    </style>
+  </head>
+
+  <center>
+    <body>
+      <a href="index.php" class="logo">
+        <img width="30" height="30" src="logo.jpg" alt="Logo" />
+      </a>
+
+      <form method="GET" action="data.php">
+        <input type="text" name="search" placeholder="Search..." />
+        <button type="submit">Search</button>
+      </form>
+      <?php
+    // Database connection
+    $conn = new mysqli('localhost', 'root', '', 'login_sample_db');
+    if ($conn->connect_error) { die("Connection failed: " .
+      $conn->connect_error); } // Fetch data from the database based on the
+      search query $search = isset($_GET['search']) ? $_GET['search'] : ''; //
+      Get the search query from the URL parameter $search =
+      mysqli_real_escape_string($conn, $search); // Prevent SQL injection $sql =
+      "SELECT * FROM registration WHERE firstname LIKE '%$search%' OR lastname
+      LIKE '%$search%' OR gender LIKE '%$search%' OR email LIKE '%$search%' OR
+      dis LIKE '%$search%' OR number LIKE '%$search%'"; $result =
+      $conn->query($sql); // Check if there are rows in the result if
+      ($result->num_rows > 0) { echo "
+      <table>
+        "; echo "
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Dis</th>
+          <th>Number</th>
+        </tr>
+        "; // Output data of each row while ($row = $result->fetch_assoc()) {
+        echo "
+        <tr>
+          <td>" . $row["firstname"] . "</td>
+          <td>" . $row["lastname"] . "</td>
+          <td>" . $row["gender"] . "</td>
+          <td>" . $row["email"] . "</td>
+          <td>" . $row["dis"] . "</td>
+          <td>" . $row["number"] . "</td>
+        </tr>
+        "; } echo "
+      </table>
+      "; } else { echo "
+      <p>No results found for the search query: " . $search . "</p>
+      "; } $conn->close(); ?>
+    </body>
+  </center>
+</html>

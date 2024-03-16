@@ -1,0 +1,139 @@
+<?php 
+
+session_start();
+
+	include("connection.php");
+	include("functions.php");
+
+
+	if($_SERVER['REQUEST_METHOD'] == "POST")
+	{
+		//something was posted
+		$user_name = $_POST['user_name'];
+		$password = $_POST['password'];
+
+		if(!empty($user_name) && !empty($password) && !is_numeric($user_name))
+		{
+
+			//read from database
+			$query = "select * from users where user_name = '$user_name' limit 1";
+			$result = mysqli_query($con, $query);
+
+			if($result)
+			{
+				if($result && mysqli_num_rows($result) > 0)
+				{
+
+					$user_data = mysqli_fetch_assoc($result);
+					
+					if($user_data['password'] === $password)
+					{
+
+						$_SESSION['user_id'] = $user_data['user_id'];
+						header("Location: index.php");
+						die;
+					}
+				}
+			}
+			
+			echo "wrong username or password!";
+		}else
+		{
+			echo "wrong username or password!";
+		}
+	}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #box {
+            background-color: #ffffff; /* White */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #box h2 {
+            font-size: 24px;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        #text {
+            height: 25px;
+            border-radius: 5px;
+            padding: 10px;
+            border: solid thin #ddd;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            background-color: #f8f8f8;
+        }
+
+        #button {
+            padding: 10px;
+            width: 100%;
+            color: #fff;
+            background-color: #3498db; /* Blue */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #button:hover {
+            background-color: #2980b9; /* Slightly Darker Blue on Hover */
+        }
+
+        a {
+            text-decoration: none;
+            color: #555; /* Dark Gray */
+        }
+
+        @media only screen and (max-width: 400px) {
+            #box {
+                width: 90%;
+            }
+        }
+        #box h2 {
+            font-size: 24px;
+            color: #3498db; /* Blue */
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="box">
+        <form method="post">
+            <h2>Login</h2>
+
+            <input id="text" type="text" name="user_name" placeholder="Username"><br>
+            <input id="text" type="password" name="password" placeholder="Password"><br>
+
+            <input id="button" type="submit" value="Login"><br>
+
+            <p style="color: #555;">Don't have an account? <a href="signup.php">Signup here</a></p>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search and Display Data</title>
+    <style>
+        /* Your existing styles */
+    </style>
+    <script>
+        // Function to perform dynamic search
+        function dynamicSearch() {
+            var searchTerm = document.getElementById("searchInput").value;
+
+            // You can adjust the minimum length for search as needed
+            if (searchTerm.length >= 3) {
+                // Use AJAX to send the search term to the server and update the results dynamically
+                // Here, you can use XMLHttpRequest or fetch API for asynchronous communication
+                // For simplicity, this example uses a URL parameter for dynamic search
+                window.history.pushState(null, "", "data.php?search=" + searchTerm);
+            }
+        }
+
+        // Function to handle browser back button
+        window.onpopstate = function(event) {
+            // Redirect to "data.php" when back button is clicked
+            window.location.href = "data.php";
+        };
+    </script>
+</head>
+
+<body>
+    <div>
+        <form>
+            <input type="text" id="searchInput" placeholder="Search..." oninput="dynamicSearch()">
+        </form>
+    </div>
+</body>
+
+</html>
